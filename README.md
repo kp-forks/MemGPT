@@ -1,377 +1,304 @@
-<a href="#user-content-memgpt"><img src="https://memgpt.ai/assets/img/memgpt_logo_circle.png" alt="MemGPT logo" width="75" align="right"></a>
-
-# [MemGPT](https://memgpt.ai)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/letta-ai/letta/refs/heads/main/assets/Letta-logo-RGB_GreyonTransparent_cropped_small.png">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/letta-ai/letta/refs/heads/main/assets/Letta-logo-RGB_OffBlackonTransparent_cropped_small.png">
+    <img alt="Letta logo" src="https://raw.githubusercontent.com/letta-ai/letta/refs/heads/main/assets/Letta-logo-RGB_GreyonOffBlack_cropped_small.png" width="500">
+  </picture>
+</p>
 
 <div align="center">
+<h1>Letta (previously MemGPT)</h1>
 
- <strong>Try out our MemGPT chatbot on <a href="https://discord.gg/9GEQrxmVyE">Discord</a>!</strong>
+**☄️ New release: Letta Agent Development Environment (_read more [here](#-access-the-ade-agent-development-environment)_) ☄️**
 
- <strong>⭐ NEW: You can now run MemGPT with <a href="https://github.com/cpacker/MemGPT/discussions/67">local LLMs</a> and <a href="https://github.com/cpacker/MemGPT/discussions/65">AutoGen</a>! ⭐ </strong>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/letta-ai/letta/refs/heads/main/assets/example_ade_screenshot.png">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/letta-ai/letta/refs/heads/main/assets/example_ade_screenshot_light.png">
+    <img alt="Letta logo" src="https://raw.githubusercontent.com/letta-ai/letta/refs/heads/main/assets/example_ade_screenshot.png" width="800">
+  </picture>
+</p>
 
-[![Discord](https://img.shields.io/discord/1161736243340640419?label=Discord&logo=discord&logoColor=5865F2&style=flat-square&color=5865F2)](https://discord.gg/9GEQrxmVyE)
-[![arXiv 2310.08560](https://img.shields.io/badge/arXiv-2310.08560-B31B1B?logo=arxiv&style=flat-square)](https://arxiv.org/abs/2310.08560)
+---
+
+<h3>
+
+[Homepage](https://letta.com) // [Documentation](https://docs.letta.com) // [ADE](https://docs.letta.com/agent-development-environment) // [Letta Cloud](https://forms.letta.com/early-access)
+
+</h3>
+
+**👾 Letta** is an open source framework for building stateful LLM applications. You can use Letta to build **stateful agents** with advanced reasoning capabilities and transparent long-term memory. The Letta framework is white box and model-agnostic.
+
+[![Discord](https://img.shields.io/discord/1161736243340640419?label=Discord&logo=discord&logoColor=5865F2&style=flat-square&color=5865F2)](https://discord.gg/letta)
+[![Twitter Follow](https://img.shields.io/badge/Follow-%40Letta__AI-1DA1F2?style=flat-square&logo=x&logoColor=white)](https://twitter.com/Letta_AI)
+[![arxiv 2310.08560](https://img.shields.io/badge/Research-2310.08560-B31B1B?logo=arxiv&style=flat-square)](https://arxiv.org/abs/2310.08560)
+
+[![Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-silver?style=flat-square)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/cpacker/MemGPT?style=flat-square&label=Release&color=limegreen)](https://github.com/cpacker/MemGPT/releases)
+[![Docker](https://img.shields.io/docker/v/letta/letta?style=flat-square&logo=docker&label=Docker&color=0db7ed)](https://hub.docker.com/r/letta/letta)
+[![GitHub](https://img.shields.io/github/stars/cpacker/MemGPT?style=flat-square&logo=github&label=Stars&color=gold)](https://github.com/cpacker/MemGPT)
+
+<a href="https://trendshift.io/repositories/3612" target="_blank"><img src="https://trendshift.io/api/badge/repositories/3612" alt="cpacker%2FMemGPT | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 
 </div>
 
-<details open>
-  <summary><h2>🤖 Create perpetual chatbots with self-editing memory!</h2></summary>
-  <div align="center">
-    <br>
-    <img src="https://memgpt.ai/assets/img/demo.gif" alt="MemGPT demo video" width="800">
-  </div>
-</details>
+> [!IMPORTANT]
+> **Looking for MemGPT?** You're in the right place!
+>
+> The MemGPT package and Docker image have been renamed to `letta` to clarify the distinction between MemGPT *agents* and the Letta API *server* / *runtime* that runs LLM agents as *services*. Read more about the relationship between MemGPT and Letta [here](https://www.letta.com/blog/memgpt-and-letta).
+
+---
+
+## ⚡ Quickstart
+
+_The recommended way to use Letta is to run use Docker. To install Docker, see [Docker's installation guide](https://docs.docker.com/get-docker/). For issues with installing Docker, see [Docker's troubleshooting guide](https://docs.docker.com/desktop/troubleshoot-and-support/troubleshoot/). You can also install Letta using `pip` (see instructions [below](#-quickstart-pip))._
+
+### 🌖 Run the Letta server
+
+> [!NOTE]
+> Letta agents live inside the Letta server, which persists them to a database. You can interact with the Letta agents inside your Letta server via the [REST API](https://docs.letta.com/api-reference) + Python / Typescript SDKs, and the [Agent Development Environment](https://app.letta.com) (a graphical interface).
+
+The Letta server can be connected to various LLM API backends ([OpenAI](https://docs.letta.com/models/openai), [Anthropic](https://docs.letta.com/models/anthropic), [vLLM](https://docs.letta.com/models/vllm), [Ollama](https://docs.letta.com/models/ollama), etc.). To enable access to these LLM API providers, set the appropriate environment variables when you use `docker run`:
+```sh
+# replace `~/.letta/.persist/pgdata` with wherever you want to store your agent data
+docker run \
+  -v ~/.letta/.persist/pgdata:/var/lib/postgresql/data \
+  -p 8283:8283 \
+  -e OPENAI_API_KEY="your_openai_api_key" \
+  letta/letta:latest
+```
+
+If you have many different LLM API keys, you can also set up a `.env` file instead and pass that to `docker run`:
+```sh
+# using a .env file instead of passing environment variables
+docker run \
+  -v ~/.letta/.persist/pgdata:/var/lib/postgresql/data \
+  -p 8283:8283 \
+  --env-file .env \
+  letta/letta:latest
+```
+
+Once the Letta server is running, you can access it via port `8283` (e.g. sending REST API requests to `http://localhost:8283/v1`). You can also connect your server to the Letta ADE to access and manage your agents in a web interface.
+
+### 👾 Access the ADE (Agent Development Environment)
+
+> [!NOTE]
+> For a guided tour of the ADE, watch our [ADE walkthrough on YouTube](https://www.youtube.com/watch?v=OzSCFR0Lp5s), or read our [blog post](https://www.letta.com/blog/introducing-the-agent-development-environment) and [developer docs](https://docs.letta.com/agent-development-environment).
+
+The Letta ADE is a graphical user interface for creating, deploying, interacting and observing with your Letta agents. For example, if you're running a Letta server to power an end-user application (such as a customer support chatbot), you can use the ADE to test, debug, and observe the agents in your server. You can also use the ADE as a general chat interface to interact with your Letta agents.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/letta-ai/letta/refs/heads/main/assets/example_ade_screenshot.png">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/letta-ai/letta/refs/heads/main/assets/example_ade_screenshot_light.png">
+    <img alt="ADE screenshot" src="https://raw.githubusercontent.com/letta-ai/letta/refs/heads/main/assets/example_ade_screenshot.png" width="800">
+  </picture>
+</p>
+
+The ADE can connect to self-hosted Letta servers (e.g. a Letta server running on your laptop), as well as the Letta Cloud service. When connected to a self-hosted / private server, the ADE uses the Letta REST API to communicate with your server.
+
+#### 🖥️ Connecting the ADE to your local Letta server
+To connect the ADE with your local Letta server, simply:
+1. Start your Letta server (`docker run ...`)
+2. Visit [https://app.letta.com](https://app.letta.com) and you will see "Local server" as an option in the left panel
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/letta-ai/letta/refs/heads/main/assets/example_ade_screenshot_agents.png">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/letta-ai/letta/refs/heads/main/assets/example_ade_screenshot_agents_light.png">
+    <img alt="Letta logo" src="https://raw.githubusercontent.com/letta-ai/letta/refs/heads/main/assets/example_ade_screenshot_agents.png" width="800">
+  </picture>
+</p>
+
+🔐 To password protect your server, include `SECURE=true` and `LETTA_SERVER_PASSWORD=yourpassword` in your `docker run` command:
+```sh
+# If LETTA_SERVER_PASSWORD isn't set, the server will autogenerate a password
+docker run \
+  -v ~/.letta/.persist/pgdata:/var/lib/postgresql/data \
+  -p 8283:8283 \
+  --env-file .env \
+  -e SECURE=true \
+  -e LETTA_SERVER_PASSWORD=yourpassword \
+  letta/letta:latest
+```
+
+#### 🌐 Connecting the ADE to an external (self-hosted) Letta server
+If your Letta server isn't running on `localhost` (for example, you deployed it on an external service like EC2):
+1. Click "Add remote server"
+2. Enter your desired server name, the IP address of the server, and the server password (if set)
+
+---
+
+## 🧑‍🚀 Frequently asked questions (FAQ)
+
+> _"Do I need to install Docker to use Letta?"_
+
+No, you can install Letta using `pip` (via `pip install -U letta`), as well as from source (via `poetry install`). See instructions below.
+
+> _"What's the difference between installing with `pip` vs `Docker`?"_
+
+Letta gives your agents persistence (they live indefinitely) by storing all your agent data in a database. Letta is designed to be used with a [PostgreSQL](https://en.wikipedia.org/wiki/PostgreSQL) (the world's most popular database), however, it is not possible to install PostgreSQL via `pip`, so the `pip` install of Letta defaults to using [SQLite](https://www.sqlite.org/). If you have a PostgreSQL instance running on your own computer, you can still connect Letta (installed via `pip`) to PostgreSQL by setting the environment variable `LETTA_PG_URI`.
+
+**Database migrations are not officially supported for Letta when using SQLite**, so if you would like to ensure that you're able to upgrade to the latest Letta version and migrate your Letta agents data, make sure that you're using PostgreSQL as your Letta database backend. Full compatability table below:
+
+| Installation method | Start server command | Database backend | Data migrations supported? |
+|---|---|---|---|
+| `pip install letta` | `letta server` | SQLite | ❌ |
+| `pip install letta` | `export LETTA_PG_URI=...` + `letta server` | PostgreSQL | ✅ |
+| *[Install Docker](https://www.docker.com/get-started/)*  |`docker run ...` ([full command](#-run-the-letta-server)) | PostgreSQL | ✅ |
+
+> _"How do I use the ADE locally?"_
+
+To connect the ADE to your local Letta server, simply run your Letta server (make sure you can access `localhost:8283`) and go to [https://app.letta.com](https://app.letta.com). If you would like to use the old version of the ADE (that runs on `localhost`), downgrade to Letta version `<=0.5.0`.
+
+> _"If I connect the ADE to my local server, does my agent data get uploaded to letta.com?"_
+
+No, the data in your Letta server database stays on your machine. The Letta ADE web application simply connects to your local Letta server (via the REST API) and provides a graphical interface on top of it to visualize your local Letta data in your browser's local state.
+
+> _"Do I have to use your ADE? Can I build my own?"_
+
+The ADE is built on top of the (fully open source) Letta server and Letta Agents API. You can build your own application like the ADE on top of the REST API (view the documention [here](https://docs.letta.com/api-reference)).
+
+> _"Can I interact with Letta agents via the CLI?"_
+
+The recommended way to use Letta is via the REST API and ADE, however you can also access your agents via the CLI.
 
 <details>
- <summary><h2>🗃️ Chat with your data - talk to your SQL database or your local files!</strong></h2></summary>
-  <strong>SQL Database</strong>
-  <div align="center">
-    <img src="https://memgpt.ai/assets/img/sql_demo.gif" alt="MemGPT demo video for sql search" width="800">
-  </div>
-  <strong>Local files</strong>
-  <div align="center">
-    <img src="https://memgpt.ai/assets/img/preload_archival_demo.gif" alt="MemGPT demo video for sql search" width="800">
-  </div>
+<summary>View instructions for running the Letta CLI</summary>
+
+You can chat with your agents via the Letta CLI tool (`letta run`). If you have a Letta Docker container running, you can use `docker exec` to run the Letta CLI inside the container:
+```sh
+# replace `<letta_container_id>` with the ID of your Letta container, found via `docker ps`
+docker exec -it <letta_container_id> letta run
+```
+
+You can also use `docker ps` within the command to automatically find the ID of your Letta container:
+```
+docker exec -it $(docker ps -q -f ancestor=letta/letta) letta run
+```
+
+In the CLI tool, you'll be able to create new agents, or load existing agents:
+```
+🧬 Creating new agent...
+? Select LLM model: letta-free [type=openai] [ip=https://inference.memgpt.ai]
+? Select embedding model: letta-free [type=hugging-face] [ip=https://embeddings.memgpt.ai]
+->  🤖 Using persona profile: 'sam_pov'
+->  🧑 Using human profile: 'basic'
+->  🛠️  8 tools: send_message, pause_heartbeats, conversation_search, conversation_search_date, archival_memory_insert, archival_memory_search, core_memory_append, core_memory_replace
+
+🎉 Created new agent 'InspiringSpinach'
+
+Hit enter to begin (will request first Letta message)
+
+💭 User engaged. Recognize as Chad. Acknowledge presence and establish connection. Explore interests and engage in meaningful discourse.
+🤖 Hello, Chad. It's nice to meet you. I am keen on learning and exploring new ideas and concepts. Is there a specific topic you'd like to discuss today?
+
+> Enter your message: my name is Brad, not Chad...
+
+💭 A discrepancy in identity. Reflect this change in core memory. Apologize for the oversight, and rectify the error.
+⚡🧠 [function] updating memory with core_memory_replace
+         First name: Chad
+        → First name: Brad
+💭 Apologize for the mistake in recognizing his name, and begin the conversation anew, addressing him by the correct name this time.
+🤖 I apologize for the oversight, Brad. Let's restart. It's a pleasure to meet you, Brad. Is there a specific topic you'd like to discuss today?
+
+> Enter your message:
+```
 </details>
+
+---
+
+## ⚡ Quickstart (pip)
+
+> [!WARNING]
+> **Database migrations are not officially supported with `SQLite`**
+>
+> When you install Letta with `pip`, the default database backend is `SQLite` (you can still use an external `postgres` service with your `pip` install of Letta by setting `LETTA_PG_URI`).
+>
+> We do not officially support migrations between Letta versions with `SQLite` backends, only `postgres`. If you would like to keep your agent data across multiple Letta versions we highly recommend using the Docker install method which is the easiest way to use `postgres` with Letta.
 
 <details>
-  <summary><h2>📄 You can also talk to docs - for example ask about <a href="memgpt/personas/examples/docqa">LlamaIndex</a>!</h1></summary>
-  <div align="center">
-    <img src="https://memgpt.ai/assets/img/docqa_demo.gif" alt="MemGPT demo video for llamaindex api docs search" width="800">
-  </div>
-  <details>
-  <summary><b>ChatGPT (GPT-4) when asked the same question:</b></summary>
-    <div align="center">
-      <img src="https://memgpt.ai/assets/img/llama_index_gpt4.png" alt="GPT-4 when asked about llamaindex api docs" width="800">
-    </div>
-    (Question from https://github.com/run-llama/llama_index/issues/7756)
-  </details>
-</details>
 
-## Quick setup
+<summary>View instructions for installing with pip</summary>
 
-Join <a href="https://discord.gg/9GEQrxmVyE">Discord</a></strong> and message the MemGPT bot (in the `#memgpt` channel). Then run the following commands (messaged to "MemGPT Bot"):
-* `/profile` (to create your profile)
-* `/key` (to enter your OpenAI key)
-* `/create` (to create a MemGPT chatbot)
+You can also install Letta with `pip`, which will default to using `SQLite` for the database backends (whereas Docker will default to using `postgres`).
 
-Make sure your privacy settings on this server are open so that MemGPT Bot can DM you: \
-MemGPT → Privacy Settings → Direct Messages set to ON
-<div align="center">
- <img src="https://memgpt.ai/assets/img/discord/dm_settings.png" alt="set DMs settings on MemGPT server to be open in MemGPT so that MemGPT Bot can message you" width="400">
-</div>
-
-You can see the full list of available commands when you enter `/` into the message box.
-<div align="center">
- <img src="https://memgpt.ai/assets/img/discord/slash_commands.png" alt="MemGPT Bot slash commands" width="400">
-</div>
-
-## What is MemGPT?
-
-Memory-GPT (or MemGPT in short) is a system that intelligently manages different memory tiers in LLMs in order to effectively provide extended context within the LLM's limited context window. For example, MemGPT knows when to push critical information to a vector database and when to retrieve it later in the chat, enabling perpetual conversations. Learn more about MemGPT in our [paper](https://arxiv.org/abs/2310.08560).
-
-## Running MemGPT locally
-
-Install MemGPT:
-
+### Step 1 - Install Letta using `pip`
 ```sh
-pip install pymemgpt
+pip install -U letta
 ```
 
-To update the package, run
+### Step 2 - Set your environment variables for your chosen LLM / embedding providers
 ```sh
-pip install pymemgpt -U
+export OPENAI_API_KEY=sk-...
 ```
 
-Add your OpenAI API key to your environment:
-
+For Ollama (see our full [documentation](https://docs.letta.com/install) for examples of how to set up various providers):
 ```sh
-# on Linux/Mac
-export OPENAI_API_KEY=YOUR_API_KEY
+export OLLAMA_BASE_URL=http://localhost:11434
 ```
 
+### Step 3 - Run the Letta CLI
+
+You can create agents and chat with them via the Letta CLI tool (`letta run`):
 ```sh
-# on Windows
-set OPENAI_API_KEY=YOUR_API_KEY
+letta run
+```
+```
+🧬 Creating new agent...
+? Select LLM model: letta-free [type=openai] [ip=https://inference.memgpt.ai]
+? Select embedding model: letta-free [type=hugging-face] [ip=https://embeddings.memgpt.ai]
+->  🤖 Using persona profile: 'sam_pov'
+->  🧑 Using human profile: 'basic'
+->  🛠️  8 tools: send_message, pause_heartbeats, conversation_search, conversation_search_date, archival_memory_insert, archival_memory_search, core_memory_append, core_memory_replace
+
+🎉 Created new agent 'InspiringSpinach'
+
+Hit enter to begin (will request first Letta message)
+
+💭 User engaged. Recognize as Chad. Acknowledge presence and establish connection. Explore interests and engage in meaningful discourse.
+🤖 Hello, Chad. It's nice to meet you. I am keen on learning and exploring new ideas and concepts. Is there a specific topic you'd like to discuss today?
+
+> Enter your message: my name is Brad, not Chad...
+
+💭 A discrepancy in identity. Reflect this change in core memory. Apologize for the oversight, and rectify the error.
+⚡🧠 [function] updating memory with core_memory_replace
+         First name: Chad
+        → First name: Brad
+💭 Apologize for the mistake in recognizing his name, and begin the conversation anew, addressing him by the correct name this time.
+🤖 I apologize for the oversight, Brad. Let's restart. It's a pleasure to meet you, Brad. Is there a specific topic you'd like to discuss today?
+
+> Enter your message:
 ```
 
+### Step 4 - Run the Letta server
+
+You can start the Letta API server with `letta server` (see the full API reference [here](https://docs.letta.com/api-reference)):
 ```sh
-# on Windows (PowerShell)
-$Env:OPENAI_API_KEY = "YOUR_API_KEY"
+letta server
 ```
-
-To run MemGPT for as a conversation agent in CLI mode, simply run `memgpt`:
-
-```sh
-memgpt
 ```
-
-<details>
-<summary><strong>Debugging command not found</strong></summary>
-
-If you get `command not found` (Linux/MacOS), or a `CommandNotFoundException` (Windows), the directory where pip installs scripts is not in your PATH. You can either add that directory to your path (`pip show pip | grep Scripts`) or instead just run:
-```sh
-python -m memgpt
+Initializing database...
+Running: uvicorn server:app --host localhost --port 8283
+INFO:     Started server process [47750]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://localhost:8283 (Press CTRL+C to quit)
 ```
 </details>
 
-<details>
-<summary><strong>Building from source</strong></summary>
+---
 
-Clone this repo: `git clone https://github.com/cpacker/MemGPT.git`
+## 🤗 How to contribute
 
-Using poetry:
-1. Install poetry: `pip install poetry`
-2. Run `poetry install`
-3. Run `poetry run memgpt`
+Letta is an open source project built by over a hundred contributors. There are many ways to get involved in the Letta OSS project!
 
-Using pip:
-1. Run `pip install -e .`
-2. Run `python3 main.py`
-</details>
+* **Contribute to the project**: Interested in contributing? Start by reading our [Contribution Guidelines](https://github.com/cpacker/MemGPT/tree/main/CONTRIBUTING.md).
+* **Ask a question**: Join our community on [Discord](https://discord.gg/letta) and direct your questions to the `#support` channel.
+* **Report issues or suggest features**: Have an issue or a feature request? Please submit them through our [GitHub Issues page](https://github.com/cpacker/MemGPT/issues).
+* **Explore the roadmap**: Curious about future developments? View and comment on our [project roadmap](https://github.com/cpacker/MemGPT/issues/1533).
+* **Join community events**: Stay updated with the [event calendar](https://lu.ma/berkeley-llm-meetup) or follow our [Twitter account](https://twitter.com/Letta_AI).
 
+---
 
-If you're using Azure OpenAI, set these variables instead:
-
-```sh
-# see https://github.com/openai/openai-python#microsoft-azure-endpoints
-export AZURE_OPENAI_KEY = ...
-export AZURE_OPENAI_ENDPOINT = ...
-export AZURE_OPENAI_VERSION = ...
-
-# set the below if you are using deployment ids
-export AZURE_OPENAI_DEPLOYMENT = ...
-export AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT = ...
-
-# then use the --use_azure_openai flag
-memgpt --use_azure_openai
-```
-
-To create a new starter user or starter persona (that MemGPT gets initialized with), create a new `.txt` file in `~/.memgpt/humans` or `~/.memgpt/personas`, then use the `--persona` or `--human` flag when running `main.py`. For example:
-```sh
-# assuming you created a new file ~/.memgpt/humans/me.txt
-memgpt
-# Select me.txt during configuration process
-```
--- OR --
-```sh
-# assuming you created a new file ~/.memgpt/humans/me.txt
-memgpt --human me.txt
-```
-You can also specify any of the starter users in [/memgpt/humans/examples](/memgpt/humans/examples) or any of the starter personas in [/memgpt/personas/examples](/memgpt/personas/examples).
-
-### GPT-3.5 support
-You can run MemGPT with GPT-3.5 as the LLM instead of GPT-4:
-```sh
-memgpt
-# Select gpt-3.5 during configuration process
-```
--- OR --
-```sh
-memgpt --model gpt-3.5-turbo
-```
-
-**Note that this is experimental gpt-3.5-turbo support. It's quite buggy compared to gpt-4, but it should be runnable.**
-
-Please report any bugs you encounter regarding MemGPT running on GPT-3.5 to  https://github.com/cpacker/MemGPT/issues/59.
-
-### Local LLM support
-You can run MemGPT with local LLMs too. See [instructions here](/memgpt/local_llm) and report any bugs/improvements here https://github.com/cpacker/MemGPT/discussions/67.
-
-### `main.py` flags
-```text
---first
-  allows you to send the first message in the chat (by default, MemGPT will send the first message)
---debug
-  enables debugging output
-```
-
-<details>
-<summary>Configure via legacy flags</summary>
-
-```text
---model
-  select which model to use ('gpt-4', 'gpt-3.5-turbo-0613', 'gpt-3.5-turbo')
---persona
-  load a specific persona file
---human
-  load a specific human file
---archival_storage_faiss_path=<ARCHIVAL_STORAGE_FAISS_PATH>
-  load in document database (backed by FAISS index)
---archival_storage_files="<ARCHIVAL_STORAGE_FILES_GLOB_PATTERN>"
-  pre-load files into archival memory
---archival_storage_files_compute_embeddings="<ARCHIVAL_STORAGE_FILES_GLOB_PATTERN>"
-  pre-load files into archival memory and also compute embeddings for embedding search
---archival_storage_sqldb=<SQLDB_PATH>
-  load in SQL database
-```
-</details>
-
-
-### Interactive CLI commands
-
-These are the commands for the CLI, **not the Discord bot**! The Discord bot has separate commands you can see in Discord by typing `/`.
-
-While using MemGPT via the CLI (not Discord!) you can run various commands:
-
-```text
-//
-  toggle multiline input mode
-/exit
-  exit the CLI
-/save
-  save a checkpoint of the current agent/conversation state
-/load
-  load a saved checkpoint
-/dump
-  view the current message log (see the contents of main context)
-/memory
-  print the current contents of agent memory
-/pop
-  undo the last message in the conversation
-/heartbeat
-  send a heartbeat system message to the agent
-/memorywarning
-  send a memory warning system message to the agent
-```
-## Example applications
-<details open>
-<summary><h3>Use MemGPT to talk to your Database!</h3></summary>
-
-MemGPT's archival memory let's you load your database and talk to it! To motivate this use-case, we have included a toy example.
-
-Consider the `test.db` already included in the repository.
-
-id	| name |	age
---- | --- | ---
-1	| Alice |	30
-2	| Bob	 | 25
-3	| Charlie |	35
-
-To talk to this database, run:
-
-```sh
-memgpt --archival_storage_sqldb=memgpt/personas/examples/sqldb/test.db
-```
-
-And then you can input the path to your database, and your query.
-
-```python
-Please enter the path to the database. test.db
-...
-Enter your message: How old is Bob?
-...
-🤖 Bob is 25 years old.
-```
-</details>
-<details>
- <summary><h3>Loading local files into archival memory</h3></summary>
- MemGPT enables you to chat with your data locally -- this example gives the workflow for loading documents into MemGPT's archival memory.
-
-To run our example where you can search over the SEC 10-K filings of Uber, Lyft, and Airbnb,
-
-1. Download the .txt files from [Hugging Face](https://huggingface.co/datasets/MemGPT/example-sec-filings/tree/main) and place them in `memgpt/personas/examples/preload_archival`.
-
-2. In the root `MemGPT` directory, run
-    ```bash
-    memgpt --archival_storage_files="memgpt/personas/examples/preload_archival/*.txt" --persona=memgpt_doc --human=basic
-    ```
-
-If you would like to load your own local files into MemGPT's archival memory, run the command above but replace `--archival_storage_files="memgpt/personas/examples/preload_archival/*.txt"` with your own file glob expression (enclosed in quotes).
-
-#### Enhance with embeddings search
-In the root `MemGPT` directory, run
-  ```bash
-  memgpt main.py --archival_storage_files_compute_embeddings="<GLOB_PATTERN>" --persona=memgpt_doc --human=basic
-  ```
-
-This will generate embeddings, stick them into a FAISS index, and write the index to a directory, and then output:
-```
-  To avoid computing embeddings next time, replace --archival_storage_files_compute_embeddings=<GLOB_PATTERN> with
-    --archival_storage_faiss_path=<DIRECTORY_WITH_EMBEDDINGS> (if your files haven't changed).
-```
-
-If you want to reuse these embeddings, run
-```bash
-memgpt --archival_storage_faiss_path="<DIRECTORY_WITH_EMBEDDINGS>" --persona=memgpt_doc --human=basic
-```
-
-
-</details>
-<details>
-<summary><h3>Talking to LlamaIndex API Docs</h3></summary>
-
-MemGPT also enables you to chat with docs -- try running this example to talk to the LlamaIndex API docs!
-
-1.
-    a. Download LlamaIndex API docs and FAISS index from [Hugging Face](https://huggingface.co/datasets/MemGPT/llamaindex-api-docs).
-   ```bash
-   # Make sure you have git-lfs installed (https://git-lfs.com)
-   git lfs install
-   git clone https://huggingface.co/datasets/MemGPT/llamaindex-api-docs
-   mv llamaindex-api-docs
-   ```
-
-    **-- OR --**
-
-   b. Build the index:
-    1. Build `llama_index` API docs with `make text`. Instructions [here](https://github.com/run-llama/llama_index/blob/main/docs/DOCS_README.md). Copy over the generated `_build/text` folder to `memgpt/personas/docqa`.
-    2. Generate embeddings and FAISS index.
-        ```bash
-        cd memgpt/personas/docqa
-        python3 scrape_docs.py
-        python3 generate_embeddings_for_docs.py all_docs.jsonl
-        python3 build_index.py --embedding_files all_docs.embeddings.jsonl --output_index_file all_docs.index
-
-3. In the root `MemGPT` directory, run
-    ```bash
-    memgpt --archival_storage_faiss_path=<ARCHIVAL_STORAGE_FAISS_PATH> --persona=memgpt_doc --human=basic
-    ```
-    where `ARCHIVAL_STORAGE_FAISS_PATH` is the directory where `all_docs.jsonl` and `all_docs.index` are located.
-   If you downloaded from Hugging Face, it will be `memgpt/personas/docqa/llamaindex-api-docs`.
-   If you built the index yourself, it will be `memgpt/personas/docqa`.
-</details>
-
-## Support
-
-If you have any further questions, or have anything to share, we are excited to hear your feedback!
-
-* By default MemGPT will use `gpt-4`, so your API key will require `gpt-4` API access
-* For issues and feature requests, please [open a GitHub issue](https://github.com/cpacker/MemGPT/issues) or message us on our `#support` channel on [Discord](https://discord.gg/9GEQrxmVyE)
-
-## Datasets
-Datasets used in our [paper](https://arxiv.org/abs/2310.08560) can be downloaded at [Hugging Face](https://huggingface.co/MemGPT).
-
-## 🚀 Project Roadmap
-- [x] Release MemGPT Discord bot demo (perpetual chatbot)
-- [x] Add additional workflows (load SQL/text into MemGPT external context)
-- [x] Integration tests
-- [x] Integrate with AutoGen ([discussion](https://github.com/cpacker/MemGPT/discussions/65))
-- [x] Add official gpt-3.5-turbo support ([discussion](https://github.com/cpacker/MemGPT/discussions/66))
-- [x] CLI UI improvements ([issue](https://github.com/cpacker/MemGPT/issues/11))
-- [x] Add support for other LLM backends ([issue](https://github.com/cpacker/MemGPT/issues/18), [discussion](https://github.com/cpacker/MemGPT/discussions/67))
-- [ ] Release MemGPT family of open models (eg finetuned Mistral) ([discussion](https://github.com/cpacker/MemGPT/discussions/67))
-
-## Development
-
-_Reminder: if you do not plan on modifying the source code, simply install MemGPT with `pip install pymemgpt`!_
-
-First, install Poetry using [the official instructions here](https://python-poetry.org/docs/#installing-with-the-official-installer).
-
-Then, you can install MemGPT from source with:
-```
-git clone git@github.com:cpacker/MemGPT.git
-poetry shell
-poetry install
-```
-We recommend installing pre-commit to ensure proper formatting during development:
-```
-pip install pre-commit
-pre-commit install
-pre-commit run --all-files
-```
-
-### Contributing
-We welcome pull requests! Please run the formatter before submitting a pull request:
-```
-poetry run black . -l 140
-```
+***Legal notices**: By using Letta and related Letta services (such as the Letta endpoint or hosted service), you are agreeing to our [privacy policy](https://www.letta.com/privacy-policy) and [terms of service](https://www.letta.com/terms-of-service).*
