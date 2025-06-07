@@ -40,6 +40,7 @@ class BaseAgent(ABC):
         self.message_manager = message_manager
         self.agent_manager = agent_manager
         self.actor = actor
+        self.logger = get_logger(agent_id)
 
     @abstractmethod
     async def step(self, input_messages: List[MessageCreate], max_steps: int = 10) -> LettaResponse:
@@ -103,7 +104,7 @@ class BaseAgent(ABC):
             if num_messages is None:
                 num_messages = await self.message_manager.size_async(actor=self.actor, agent_id=agent_state.id)
             if num_archival_memories is None:
-                num_archival_memories = await self.passage_manager.size_async(actor=self.actor, agent_id=agent_state.id)
+                num_archival_memories = await self.passage_manager.agent_passage_size_async(actor=self.actor, agent_id=agent_state.id)
 
             new_system_message_str = compile_system_message(
                 system_prompt=agent_state.system,

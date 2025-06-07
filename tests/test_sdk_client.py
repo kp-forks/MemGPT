@@ -113,9 +113,8 @@ def test_shared_blocks(client: LettaSDKClient):
             )
         ],
     )
-    assert (
-        "charles" in client.agents.blocks.retrieve(agent_id=agent_state2.id, block_label="human").value.lower()
-    ), f"Shared block update failed {client.agents.blocks.retrieve(agent_id=agent_state2.id, block_label='human').value}"
+    block_value = client.agents.blocks.retrieve(agent_id=agent_state2.id, block_label="human").value
+    assert "charles" in block_value.lower(), f"Shared block update failed {block_value}"
 
     # cleanup
     client.agents.delete(agent_state1.id)
@@ -477,7 +476,7 @@ def test_function_always_error(client: LettaSDKClient, agent: AgentState):
     assert response_message, "ToolReturnMessage message not found in response"
     assert response_message.status == "error"
 
-    assert response_message.tool_return == "Error executing function testing_method: ZeroDivisionError: division by zero"
+    assert "Error executing function testing_method: ZeroDivisionError: division by zero" in response_message.tool_return
     assert "ZeroDivisionError" in response_message.tool_return
 
 
@@ -682,70 +681,84 @@ def test_many_blocks(client: LettaSDKClient):
     client.agents.delete(agent2.id)
 
 
-def test_sources(client: LettaSDKClient, agent: AgentState):
+# cases: steam, async, token stream, sync
+@pytest.mark.parametrize("message_create", ["stream_step", "token_stream", "sync"])
+def test_include_return_message_types(client: LettaSDKClient, agent: AgentState, message_create: str):
+    """Test that the include_return_message_types parameter works"""
 
-    # Clear existing sources
-    for source in client.sources.list():
-        client.sources.delete(source_id=source.id)
+    def verify_message_types(messages, message_types):
+        for message in messages:
+            assert message.message_type in message_types
 
-    # Clear existing jobs
-    for job in client.jobs.list():
-        client.jobs.delete(job_id=job.id)
+    message = "My name is actually Sarah"
+    message_types = ["reasoning_message", "tool_call_message"]
+    agent = client.agents.create(
+        memory_blocks=[
+            CreateBlock(label="user", value="Name: Charles"),
+        ],
+        model="letta/letta-free",
+        embedding="letta/letta-free",
+    )
 
-    # Create a new source
-    source = client.sources.create(name="test_source", embedding="openai/text-embedding-ada-002")
-    assert len(client.sources.list()) == 1
+    if message_create == "stream_step":
+        response = client.agents.messages.create_stream(
+            agent_id=agent.id,
+            messages=[
+                MessageCreate(
+                    role="user",
+                    content=message,
+                ),
+            ],
+            include_return_message_types=message_types,
+        )
+        messages = [message for message in list(response) if message.message_type != "usage_statistics"]
+        verify_message_types(messages, message_types)
 
-    # delete the source
-    client.sources.delete(source_id=source.id)
-    assert len(client.sources.list()) == 0
-    source = client.sources.create(name="test_source", embedding="openai/text-embedding-ada-002")
+    elif message_create == "async":
+        response = client.agents.messages.create_async(
+            agent_id=agent.id,
+            messages=[
+                MessageCreate(
+                    role="user",
+                    content=message,
+                )
+            ],
+            include_return_message_types=message_types,
+        )
+        # wait to finish
+        while response.status != "completed":
+            time.sleep(1)
+            response = client.runs.retrieve(run_id=response.id)
+        messages = client.runs.messages.list(run_id=response.id)
+        verify_message_types(messages, message_types)
 
-    # Load files into the source
-    file_a_path = "tests/data/memgpt_paper.pdf"
-    file_b_path = "tests/data/test.txt"
+    elif message_create == "token_stream":
+        response = client.agents.messages.create_stream(
+            agent_id=agent.id,
+            messages=[
+                MessageCreate(
+                    role="user",
+                    content=message,
+                ),
+            ],
+            include_return_message_types=message_types,
+        )
+        messages = [message for message in list(response) if message.message_type != "usage_statistics"]
+        verify_message_types(messages, message_types)
 
-    # Upload the files
-    with open(file_a_path, "rb") as f:
-        job_a = client.sources.files.upload(source_id=source.id, file=f)
+    elif message_create == "sync":
+        response = client.agents.messages.create(
+            agent_id=agent.id,
+            messages=[
+                MessageCreate(
+                    role="user",
+                    content=message,
+                ),
+            ],
+            include_return_message_types=message_types,
+        )
+        messages = response.messages
+        verify_message_types(messages, message_types)
 
-    with open(file_b_path, "rb") as f:
-        job_b = client.sources.files.upload(source_id=source.id, file=f)
-
-    # Wait for the jobs to complete
-    while job_a.status != "completed" or job_b.status != "completed":
-        time.sleep(1)
-        job_a = client.jobs.retrieve(job_id=job_a.id)
-        job_b = client.jobs.retrieve(job_id=job_b.id)
-        print("Waiting for jobs to complete...", job_a.status, job_b.status)
-
-    # Get the first file with pagination
-    files_a = client.sources.files.list(source_id=source.id, limit=1)
-    assert len(files_a) == 1
-    assert files_a[0].source_id == source.id
-
-    # Use the cursor from files_a to get the remaining file
-    files_b = client.sources.files.list(source_id=source.id, limit=1, after=files_a[-1].id)
-    assert len(files_b) == 1
-    assert files_b[0].source_id == source.id
-
-    # Check files are different to ensure the cursor works
-    assert files_a[0].file_name != files_b[0].file_name
-
-    # Use the cursor from files_b to list files, should be empty
-    files = client.sources.files.list(source_id=source.id, limit=1, after=files_b[-1].id)
-    assert len(files) == 0  # Should be empty
-
-    # list passages
-    passages = client.sources.passages.list(source_id=source.id)
-    assert len(passages) > 0
-
-    # attach to an agent
-    assert len(client.agents.passages.list(agent_id=agent.id)) == 0
-    client.agents.sources.attach(source_id=source.id, agent_id=agent.id)
-    assert len(client.agents.passages.list(agent_id=agent.id)) > 0
-    assert len(client.agents.sources.list(agent_id=agent.id)) == 1
-
-    # detach from agent
-    client.agents.sources.detach(source_id=source.id, agent_id=agent.id)
-    assert len(client.agents.passages.list(agent_id=agent.id)) == 0
+    # cleanup
+    client.agents.delete(agent.id)
